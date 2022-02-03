@@ -1,23 +1,37 @@
-import React, { useReducer } from "react";
+import React, { useState, useEffect } from "react";
 import { Container } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { TodoContext } from "./context/TodoContext";
-import ToReducer from "./context/reducer";
-import "./App.css";
+import Todo from "./components/Todos";
 import TodoForm from "./components/TodoForm";
-import Todos from "./components/Todos";
+import "./App.css";
 
 function App() {
-  const [todos, dispatch] = useReducer(ToReducer, []);
-  return (
-    <TodoContext.Provider value={{ todos, dispatch }}>
-      <Container fluid>
-        <h1>To do app with contect api</h1>
-        <Todos />
+  const [todos, setTodos] = useState([]);
 
-        <TodoForm />
-      </Container>
-    </TodoContext.Provider>
+  useEffect(() => {
+    const localTodos = localStorage.getItem("todos");
+    if (localTodos) {
+      setTodos(JSON.parse(localTodos));
+    }
+  }, []);
+
+  const markComplete = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+  const addTodos = async (todo) => {
+    setTodos([...todos, todo]);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
+  return (
+    <Container fluid>
+      <h1>Todo with LocalStorage</h1>
+      <Todo todos={todos} markComplete={markComplete} />
+      <TodoForm addTodos={addTodos} />
+    </Container>
   );
 }
 

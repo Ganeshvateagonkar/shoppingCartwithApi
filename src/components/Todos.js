@@ -1,25 +1,14 @@
-import React, { useContext } from "react";
+import React from "react";
 import { ListGroup, ListGroupItem } from "reactstrap";
-import { REMOVE_TODO } from "../context/action.type";
-import { TodoContext } from "../context/TodoContext";
 import { FaCheckDouble } from "react-icons/fa";
 
-const Todos = () => {
-  const { todos, dispatch } = useContext(TodoContext);
+const Todo = ({ todos, markComplete }) => {
   return (
     <ListGroup className="mt-5 mb-2 items">
       {todos.map((todo) => (
         <ListGroupItem key={todo.id}>
           {todo.todoString}
-          <span
-            className="ml-5"
-            onClick={() => {
-              dispatch({
-                type: REMOVE_TODO,
-                payload: todo.id,
-              });
-            }}
-          >
+          <span className="float-right" onClick={() => markComplete(todo.id)}>
             <FaCheckDouble />
           </span>
         </ListGroupItem>
@@ -27,4 +16,5 @@ const Todos = () => {
     </ListGroup>
   );
 };
-export default Todos;
+
+export default Todo;

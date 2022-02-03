@@ -1,35 +1,27 @@
-import React, { useState, useContext } from "react";
-
+import React, { useState } from "react";
 import {
   Form,
   FormGroup,
   InputGroup,
-  Button,
-  InputGroupText,
   Input,
+  Button,
+  Container,
+  InputGroupText,
 } from "reactstrap";
-
 import { v4 as uuidv4 } from "uuid";
-import { TodoContext } from "../context/TodoContext";
-import { ADD_TODO } from "../context/action.type";
 
-const TodoForm = () => {
+const TodoForm = ({ addTodos }) => {
   const [todoString, setTodoString] = useState("");
-  const { dispatch } = useContext(TodoContext);
-
   const submitHandler = (e) => {
     e.preventDefault();
     if (todoString === "") {
-      return alert(" please enter a todo");
+      return alert("please fill some value");
     }
     const todo = {
-      todoString,
       id: uuidv4(),
+      todoString,
     };
-    dispatch({
-      type: ADD_TODO,
-      payload: todo,
-    });
+    addTodos(todo);
     setTodoString("");
   };
   return (
@@ -40,16 +32,17 @@ const TodoForm = () => {
             type="text"
             name="todo"
             id="todo"
-            placeholder="enter your todo"
+            placeholder="enter a todo"
             value={todoString}
             onChange={(e) => setTodoString(e.target.value)}
           />
           <InputGroupText>
-            <Button color="warning">Add</Button>
+            <Button color="success">Add</Button>
           </InputGroupText>
         </InputGroup>
       </FormGroup>
     </Form>
   );
 };
+
 export default TodoForm;
