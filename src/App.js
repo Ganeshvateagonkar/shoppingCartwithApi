@@ -1,36 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Container } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Todo from "./components/Todos";
-import TodoForm from "./components/TodoForm";
+import Axios from "axios";
+
 import "./App.css";
+import CardComp from "./CardComp";
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [details, setDetails] = useState({});
+  const fetchDetails = async () => {
+    const { data } = await Axios.get("https://randomuser.me/api/");
+    console.log(data);
 
+    const info = data.results[0];
+    setDetails(info);
+    console.log(info);
+  };
   useEffect(() => {
-    const localTodos = localStorage.getItem("todos");
-    if (localTodos) {
-      setTodos(JSON.parse(localTodos));
-    }
+    fetchDetails();
   }, []);
 
-  const markComplete = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
-  };
-  const addTodos = async (todo) => {
-    setTodos([...todos, todo]);
-  };
-
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  }, [todos]);
-
   return (
-    <Container fluid>
-      <h1>Todo with LocalStorage</h1>
-      <Todo todos={todos} markComplete={markComplete} />
-      <TodoForm addTodos={addTodos} />
+    <Container fluid className="p-4 bg-primary App">
+      <Row>
+        <Col md={4} className="offset-md-4 mt-4">
+          <CardComp details={details} />
+        </Col>
+      </Row>
     </Container>
   );
 }
